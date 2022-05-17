@@ -1,0 +1,2 @@
+class GroundTruthSet:
+    pass

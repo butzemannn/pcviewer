@@ -1,6 +1,7 @@
 import numpy as np
 from deprecated import deprecated
 
+from src.data.groundtruthset import GroundTruthSet
 from src.utils.transformations import (
         convert_camera_to_velodyne_coordinates,
         rearrange_coordinates
@@ -8,14 +9,15 @@ from src.utils.transformations import (
 
 
 class PointCloud():
-    def __init__(self, pcloud_location: str, format: str):
+
+    groundtruthset: GroundTruthSet
+
+    def __init__(self, pcloud_location: str, format: str, groundtruthset: GroundTruthSet = None):
         self.pcloud_location = pcloud_location
         self.format = format
         self.points = self._load_pcloud()
-
-        #print(self.points, self.points.shape)
+        self.groundtruthset = groundtruthset
         #self.convert_coordinate_system()
-        #print(self.points, self.points.shape)
     
     def _load_pcloud(self):
         if not self.format == 'bin':
@@ -34,7 +36,7 @@ class PointCloud():
         """
         :param axes: A list containing the new axis which will take the current index spot.
             E.g. [1, 2, 0] results in (y, z, x)
-        :param factors: Optional factors with which the values are multiplied with. Also corresponds with the original position.
+        :param factors: Optional factors with which the values are multiplied with. Also corresponds with the changed position.
             E.g. [-1, 1, 1] results in (-x, y, z)
         """
         if not len(axes) == 3:
@@ -43,14 +45,15 @@ class PointCloud():
         if factors and not len(factors) == 3:
             raise ValueError("factors parameter requires length 3.")
 
+        rearrange_coordinates(self, axes) 
+
         if factors:
             # bring factors to correct size so they can be multiplied with points
             npfactors = np.array(factors)
             npfactors = np.expand_dims(npfactors, axis=0)
-            npfactors = np.broadcast_to(npfactors, (self.points.shape[0], -1))
+            npfactors = np.broadcast_to(npfactors, (self.points.shape[0], npfactors.shape[1]))
             self.points = self.points * npfactors
 
-        rearrange_coordinates(self, axes) 
 
 
     def limit_range(self, minimum: list, maximum: list) -> None:
