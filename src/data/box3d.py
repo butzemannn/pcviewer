@@ -45,7 +45,7 @@ class Box3D:
     def set_size(self, size: list):
         self.h, self.w, self.l = size
 
-    def convert_to_line_set(self, color: list = [255, 0, 0]) -> o3d.geometry.LineSet:
+    def convert_to_line_set(self, color: list = (255, 0, 0)) -> o3d.geometry.LineSet:
         """
         :param box: Array(1,7) with x,y,z,h,w,l,theta
         :param colors: list [3] with the rgb values between 0 and 1

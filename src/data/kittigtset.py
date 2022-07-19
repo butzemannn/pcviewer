@@ -13,7 +13,7 @@ class KittiGTSet(GroundTruthSet):
         box3d = Box3D(center, size, angle, to_velodyne=True)
         self.ground_truths.append(box3d)
 
-    def load(self, gt_location: str, categories: list = ['Car']):
+    def load(self, gt_location: str, categories: list = ('Car')):
         """Load the kitti label files from folder given on class init"""
 
         label = []
@@ -29,12 +29,12 @@ class KittiGTSet(GroundTruthSet):
                     size = [float(x) for x in size]
                     self.add_Box3D(center, size, float(angle))
 
-    def convert_to_line_set(self) -> List[o3d.geometry.LineSet]:
+    def convert_to_line_set(self, color: list = (255, 0, 0)) -> List[o3d.geometry.LineSet]:
         if not self.ground_truths:
             return [] 
 
         line_set_list = []
         for box3d in self.ground_truths:
-            line_set_list.append(box3d.convert_to_line_set())
+            line_set_list.append(box3d.convert_to_line_set(color))
 
         return line_set_list

@@ -12,11 +12,12 @@ class PointCloud():
 
     groundtruthset: GroundTruthSet
 
-    def __init__(self, pcloud_location: str, format: str, groundtruthset: GroundTruthSet = None):
+    def __init__(self, pcloud_location: str, format: str, groundtruthset: GroundTruthSet = None, predictionset: GroundTruthSet = None):
         self.pcloud_location = pcloud_location
         self.format = format
         self.points = self._load_pcloud()
         self.groundtruthset = groundtruthset
+        self.predictionset = predictionset
         #self.convert_coordinate_system()
     
     def _load_pcloud(self):
@@ -53,7 +54,6 @@ class PointCloud():
             npfactors = np.expand_dims(npfactors, axis=0)
             npfactors = np.broadcast_to(npfactors, (self.points.shape[0], npfactors.shape[1]))
             self.points = self.points * npfactors
-
 
 
     def limit_range(self, minimum: list, maximum: list) -> None:

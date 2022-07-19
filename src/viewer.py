@@ -7,7 +7,7 @@ class Viewer:
     def __init__(self, pointcloud: PointCloud):
         self.pointcloud = pointcloud
     
-    def view_pointcloud(self, ground_truths: bool = False):
+    def view_pointcloud(self, view_ground_truths: bool = False, view_predictions: bool = False):
         # Visualizer settings
         vis = o3d.visualization.Visualizer()
         vis.create_window()
@@ -22,11 +22,17 @@ class Viewer:
         o3dframe = o3d.geometry.TriangleMesh.create_coordinate_frame()
         geometries.append(o3dframe)
         
-        if ground_truths:
+        if view_ground_truths:
             if not self.pointcloud.groundtruthset:
                 raise ValueError("Ground truth option set but no ground truths available")
             groundtruths = self.pointcloud.groundtruthset.convert_to_line_set()
             geometries.extend(groundtruths)
+
+        if view_predictions:
+            if not self.pointcloud.predictionset:
+                raise ValueError("Predictions option set but no predictions available")
+            predictions = self.pointcloud.groundtruthset.convert_to_line_set(color=(0, 0, 255))
+            geometries.extend(predictions)
 
 
         for geometry in geometries:
